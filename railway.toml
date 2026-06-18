@@ -1,0 +1,19 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "cd bot && python main.py"
+restartPolicyType = "always"
+restartPolicyMaxRetries = 10
+
+# ─── Required environment variables ──────────────────────────────────────────
+# Set these in Railway → Variables tab:
+#
+#   BOT_TOKEN   — from @BotFather
+#   API_ID      — from my.telegram.org
+#   API_HASH    — from my.telegram.org
+#   ADMIN_IDS   — your Telegram user ID(s), comma-separated
+#   DATABASE_URL — added automatically when you attach a Railway PostgreSQL service
+#
+# Add PostgreSQL: Railway dashboard → New → Database → PostgreSQL
+# DATABASE_URL is injected automatically — no manual copy needed.
