@@ -379,7 +379,10 @@ async def set_user_broadcast_setting(owner_user_id: int, key: str, value: str) -
         raise ValueError(f"Invalid broadcast setting: {key}")
     await ensure_user_broadcast_settings(owner_user_id)
     async with _db() as c:
-        await c.execute(f"UPDATE user_broadcast_settings SET {key} = ?, updated_at = ? WHERE owner_user_id = ?", (value, datetime.utcnow().isoformat(), owner_user_id))
+      await c.execute(
+    f"UPDATE user_broadcast_settings SET {key} = ?, updated_at = ? WHERE owner_user_id = ?",
+    (value, datetime.utcnow(), owner_user_id)
+)
         await c.commit()
 
 
