@@ -1410,13 +1410,13 @@ async def cmd_speed(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def cb_speed(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
-
-  logger.warning("========== CB_SPEED ENTERED ==========")
-logger.warning(f"Callback Data: {update.callback_query.data if update.callback_query else 'NONE'}")
-logger.warning(f"User: {update.effective_user.id if update.effective_user else 'NONE'}")
+    logger.warning("========== CB_SPEED ENTERED ==========")
+    logger.warning(f"Callback Data: {update.callback_query.data if update.callback_query else 'NONE'}")
+    logger.warning(f"User: {update.effective_user.id if update.effective_user else 'NONE'}")
 
     query = update.callback_query
     await query.answer()  # type: ignore[union-attr]
+
     user = update.effective_user
     if not user:
         return
