@@ -374,16 +374,25 @@ async def get_user_broadcast_setting(owner_user_id: int, key: str, default: str 
 
 
 async def set_user_broadcast_setting(owner_user_id: int, key: str, value: str) -> None:
-    allowed = {"speed_preset", "custom_batch_size", "custom_batch_delay", "custom_cycle_delay", "selected_accounts"}
+    allowed = {
+        "speed_preset",
+        "custom_batch_size",
+        "custom_batch_delay",
+        "custom_cycle_delay",
+        "selected_accounts",
+    }
+
     if key not in allowed:
         raise ValueError(f"Invalid broadcast setting: {key}")
+
     await ensure_user_broadcast_settings(owner_user_id)
-   async with _db() as c:
-    await c.execute(
-        f"UPDATE user_broadcast_settings SET {key} = ?, updated_at = ? WHERE owner_user_id = ?",
-        (value, datetime.utcnow(), owner_user_id)
-    )
-    await c.commit()
+
+    async with _db() as c:
+        await c.execute(
+            f"UPDATE user_broadcast_settings SET {key} = ?, updated_at = ? WHERE owner_user_id = ?",
+            (value, datetime.utcnow(), owner_user_id)
+        )
+        await c.commit()
 
 
 async def ensure_user_broadcast_settings(owner_user_id: int) -> None:
