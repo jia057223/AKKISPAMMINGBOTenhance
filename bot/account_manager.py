@@ -24,6 +24,17 @@ _clients: dict[int, TelegramClient] = {}
 _add_state: dict[int, dict[str, Any]] = {}
 
 
+# ─── Environment Validation Helper ───────────────────────────────────────────
+
+def _verify_runtime_environment() -> None:
+    """Intercepts and prints variable byte-representations to the Railway logs."""
+    print(f"DEBUG INTERCEPT - API_ID: {repr(config.API_ID)} | Type: {type(config.API_ID)}", flush=True)
+    print(f"DEBUG INTERCEPT - API_HASH: {repr(config.API_HASH)} | Type: {type(config.API_HASH)}", flush=True)
+    
+    assert config.API_ID != 0, "FATAL: API_ID is 0. Railway env vars are detached or falling back to default."
+    assert config.API_HASH != "", "FATAL: API_HASH is empty. Railway env vars are detached or falling back to default."
+
+
 # ─── Client lifecycle ─────────────────────────────────────────────────────────
 
 async def load_all_clients(owner_user_id: int | None = None) -> None:
@@ -36,6 +47,7 @@ async def _start_client_from_string(
     owner_user_id: int, account_id: int, session_str: str, phone: str
 ) -> TelegramClient | None:
     try:
+        _verify_runtime_environment()
         client = TelegramClient(StringSession(session_str), config.API_ID, config.API_HASH)
         await client.connect()
         if not await client.is_user_authorized():
@@ -78,6 +90,7 @@ async def disconnect_all() -> None:
 # ─── Session-string import ────────────────────────────────────────────────────
 
 async def import_session_string(owner_user_id: int, session_string: str) -> dict:
+    _verify_runtime_environment()
     client = TelegramClient(StringSession(session_string), config.API_ID, config.API_HASH)
     await client.connect()
     if not await client.is_user_authorized():
@@ -98,6 +111,7 @@ async def import_session_string(owner_user_id: int, session_string: str) -> dict
 # ─── Phone + OTP login flow ───────────────────────────────────────────────────
 
 async def begin_phone_login(chat_id: int, owner_user_id: int, phone: str) -> None:
+    _verify_runtime_environment()
     client = TelegramClient(StringSession(), config.API_ID, config.API_HASH)
     await client.connect()
     result = await client.send_code_request(phone)
